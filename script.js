@@ -31,26 +31,56 @@ const CHAT_ENDPOINT = "";    // Ex.: wss://seusite.com/chat ou endpoint HTTP con
 const musicGrid = document.getElementById("musicGrid");
 const trackCount = document.getElementById("trackCount");
 
+
 function renderTracks() {
   musicGrid.innerHTML = TRACKS.map((track, index) => `
     <article class="track-card">
+
       <div class="track-cover">
-        <img src="${escapeHTML(track.cover)}" alt="Capa de ${escapeHTML(track.title)}"
-             onerror="this.style.display='none'; this.nextElementSibling.hidden=false">
-        <div class="track-cover-fallback" hidden>${escapeHTML(track.title)}</div>
+        <img
+          src="${escapeHTML(track.cover)}"
+          alt="Capa de ${escapeHTML(track.title)}"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.hidden=false"
+        >
+        <div class="track-cover-fallback" hidden>
+          ${escapeHTML(track.title)}
+        </div>
       </div>
+
       <div class="track-meta">
         <h3>${escapeHTML(track.title)}</h3>
-        <p>Victor Manuel · Faixa ${String(index + 1).padStart(2, "0")}</p>
+        <p>Victor Manoel · Faixa ${String(index + 1).padStart(2, "0")}</p>
       </div>
+
       <div class="track-platforms">
-        <a href="${safeURL(track.spotify)}" target="_blank" rel="noopener noreferrer">Spotify ↗</a>
-        <a href="${safeURL(track.youtube)}" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
+
+        <a
+          class="platform-button spotify-button"
+          href="${safeURL(track.spotify)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>♫</span> Spotify <span>↗</span>
+        </a>
+
+        <a
+          class="platform-button youtube-button"
+          href="${safeURL(track.youtube)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>▶</span> YouTube <span>↗</span>
+        </a>
+
       </div>
     </article>
   `).join("");
-  trackCount.textContent = `${String(TRACKS.length).padStart(2, "0")} ${TRACKS.length === 1 ? "FAIXA" : "FAIXAS"}`;
+
+  trackCount.textContent =
+    `${String(TRACKS.length).padStart(2, "0")} ${TRACKS.length === 1 ? "FAIXA" : "FAIXAS"}`;
 }
+
 
 // Evita inserir conteúdo não confiável como HTML.
 function escapeHTML(value) {
@@ -211,4 +241,400 @@ if ("serviceWorker" in navigator) {
         console.error("Erro ao registrar o PWA:", error);
       });
   });
+}
+
+// CONTROLES DO VIDEOCLIP - VICTOR MANOEL
+
+let youtubePlayer;
+
+const videoStatus = document.getElementById("videoStatus");
+const playPauseButton = document.getElementById("playPauseButton");
+const stopButton = document.getElementById("stopButton");
+const backButton = document.getElementById("backButton");
+const forwardButton = document.getElementById("forwardButton");
+const muteButton = document.getElementById("muteButton");
+const volumeSlider = document.getElementById("volumeSlider");
+const volumeValue = document.getElementById("volumeValue");
+
+// Carrega a API oficial do YouTube
+const youtubeScript = document.createElement("script");
+youtubeScript.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(youtubeScript);
+
+// O YouTube chama esta função quando a API estiver pronta
+window.onYouTubeIframeAPIReady = function () {
+
+  youtubePlayer = new YT.Player("youtubePlayer", {
+    width: "100%",
+    height: "100%",
+    videoId: "qa1r3WlA-FM",
+
+    playerVars: {
+      playsinline: 1,
+      rel: 0
+    },
+
+    events: {
+      onReady: function () {
+        videoStatus.textContent = "Illusion Night está pronto para reprodução.";
+        youtubePlayer.setVolume(100);
+      },
+
+      onStateChange: function (event) {
+
+        if (event.data === YT.PlayerState.PLAYING) {
+          playPauseButton.textContent = "⏸";
+          videoStatus.textContent = "Reproduzindo Illusion Night";
+        }
+
+        else if (event.data === YT.PlayerState.PAUSED) {
+          playPauseButton.textContent = "▶";
+          videoStatus.textContent = "Vídeo pausado";
+        }
+
+        else if (event.data === YT.PlayerState.ENDED) {
+          playPauseButton.textContent = "▶";
+          videoStatus.textContent = "Videoclipe finalizado";
+        }
+
+        else if (event.data === YT.PlayerState.BUFFERING) {
+          videoStatus.textContent = "Carregando vídeo...";
+        }
+      },
+
+      onError: function () {
+        videoStatus.textContent = "Não foi possível carregar o vídeo.";
+      }
+    }
+  });
+};
+
+// Reproduzir e pausar
+playPauseButton.addEventListener("click", function () {
+
+  if (!youtubePlayer || !youtubePlayer.getPlayerState) return;
+
+  const state = youtubePlayer.getPlayerState();
+
+  if (state === YT.PlayerState.PLAYING) {
+    youtubePlayer.pauseVideo();
+  } else {
+    youtubePlayer.playVideo();
+  }
+});
+
+// Parar vídeo
+stopButton.addEventListener("click", function () {
+  if (youtubePlayer) {
+    youtubePlayer.stopVideo();
+    playPauseButton.textContent = "▶";
+    videoStatus.textContent = "Vídeo parado";
+  }
+});
+
+// Voltar 10 segundos
+backButton.addEventListener("click", function () {
+  if (youtubePlayer && youtubePlayer.getCurrentTime) {
+    const time = Math.max(0, youtubePlayer.getCurrentTime() - 10);
+    youtubePlayer.seekTo(time, true);
+  }
+});
+
+// Avançar 10 segundos
+forwardButton.addEventListener("click", function () {
+  if (youtubePlayer && youtubePlayer.getCurrentTime) {
+    const time = youtubePlayer.getCurrentTime() + 10;
+    youtubePlayer.seekTo(time, true);
+  }
+});
+
+// Ativar ou desativar áudio
+muteButton.addEventListener("click", function () {
+
+  if (!youtubePlayer) return;
+
+  if (youtubePlayer.isMuted()) {
+    youtubePlayer.unMute();
+    muteButton.textContent = "🔊";
+  } else {
+    youtubePlayer.mute();
+    muteButton.textContent = "🔇";
+  }
+});
+
+// Controle de volume
+volumeSlider.addEventListener("input", function () {
+
+  const volume = Number(volumeSlider.value);
+
+  if (youtubePlayer) {
+    youtubePlayer.setVolume(volume);
+
+    if (volume === 0) {
+      youtubePlayer.mute();
+      muteButton.textContent = "🔇";
+    } else {
+      youtubePlayer.unMute();
+      muteButton.textContent = "🔊";
+    }
+  }
+
+  volumeValue.textContent = volume + "%";
+});
+
+
+/* ==================================
+   VICTOR MANOEL - MUSIC PLAYER
+================================== */
+
+const musicAudio = document.getElementById("musicAudio");
+const musicPlayer = document.querySelector(".music-player");
+
+if (musicAudio && musicPlayer) {
+
+  const playerCover = document.getElementById("playerCover");
+  const playerTitle = document.getElementById("playerTitle");
+  const playerArtist = document.getElementById("playerArtist");
+
+  const playButton = document.getElementById("playButton");
+  const previousButton = document.getElementById("previousButton");
+  const nextButton = document.getElementById("nextButton");
+  const shuffleButton = document.getElementById("shuffleButton");
+  const repeatButton = document.getElementById("repeatButton");
+
+  const progressBar = document.getElementById("progressBar");
+  const volumeBar = document.getElementById("volumeBar");
+
+  const currentTimeDisplay = document.getElementById("currentTime");
+  const durationDisplay = document.getElementById("duration");
+
+  const playlistToggle = document.getElementById("playlistToggle");
+  const playlistPanel = document.getElementById("playlistPanel");
+  const playlistItems = document.getElementById("playlistItems");
+  const playlistCount = document.getElementById("playlistCount");
+
+  // CADASTRO DAS MÚSICAS
+  // Adicione novas músicas seguindo este modelo.
+
+  const playerTracks = [
+    {
+      title: "Illusion Night",
+      artist: "Victor Manoel",
+      cover: "imagesillusion-night.png",
+      audio: "audioillusion-night.mp3"
+    }
+  ];
+
+  let currentTrack = 0;
+  let isShuffle = false;
+  let isRepeat = false;
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return "0:00";
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+  }
+
+  function renderPlaylist() {
+    playlistItems.innerHTML = "";
+
+    playerTracks.forEach((track, index) => {
+      const item = document.createElement("button");
+
+      item.type = "button";
+      item.className = "playlist-track";
+
+      item.innerHTML = `
+        <img src="${track.cover}" alt="">
+        <span class="playlist-track-info">
+          <strong>${track.title}</strong>
+          <small>${track.artist}</small>
+        </span>
+        <i class="fa-solid fa-play"></i>
+      `;
+
+      item.addEventListener("click", () => {
+        loadTrack(index);
+        playTrack();
+      });
+
+      playlistItems.appendChild(item);
+    });
+
+    playlistCount.textContent =
+      `${String(playerTracks.length).padStart(2, "0")} FAIXAS`;
+
+    updatePlaylist();
+  }
+
+  function updatePlaylist() {
+    const items = playlistItems.querySelectorAll(".playlist-track");
+
+    items.forEach((item, index) => {
+      item.classList.toggle("active", index === currentTrack);
+
+      const icon = item.querySelector("i");
+
+      icon.className =
+        index === currentTrack && !musicAudio.paused
+          ? "fa-solid fa-volume-high"
+          : "fa-solid fa-play";
+    });
+  }
+
+  function loadTrack(index) {
+    if (!playerTracks.length) return;
+
+    currentTrack = (index + playerTracks.length) % playerTracks.length;
+
+    const track = playerTracks[currentTrack];
+
+    musicAudio.src = track.audio;
+    playerCover.src = track.cover;
+    playerTitle.textContent = track.title;
+    playerArtist.textContent = track.artist;
+
+    progressBar.value = 0;
+    currentTimeDisplay.textContent = "0:00";
+    durationDisplay.textContent = "0:00";
+
+    updatePlaylist();
+  }
+
+  async function playTrack() {
+    try {
+      await musicAudio.play();
+
+      musicPlayer.classList.add("is-playing");
+
+      playButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      playButton.setAttribute("aria-label", "Pausar");
+
+      updatePlaylist();
+    } catch (error) {
+      console.error("Não foi possível reproduzir a música:", error);
+    }
+  }
+
+  function pauseTrack() {
+    musicAudio.pause();
+
+    musicPlayer.classList.remove("is-playing");
+
+    playButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+    playButton.setAttribute("aria-label", "Reproduzir");
+
+    updatePlaylist();
+  }
+
+  playButton.addEventListener("click", () => {
+    if (musicAudio.paused) {
+      playTrack();
+    } else {
+      pauseTrack();
+    }
+  });
+
+  function nextTrack() {
+    if (isShuffle && playerTracks.length > 1) {
+      let nextIndex;
+
+      do {
+        nextIndex = Math.floor(Math.random() * playerTracks.length);
+      } while (nextIndex === currentTrack);
+
+      loadTrack(nextIndex);
+    } else {
+      loadTrack(currentTrack + 1);
+    }
+
+    playTrack();
+  }
+
+  function previousTrack() {
+    if (musicAudio.currentTime > 3) {
+      musicAudio.currentTime = 0;
+      return;
+    }
+
+    loadTrack(currentTrack - 1);
+    playTrack();
+  }
+
+  nextButton.addEventListener("click", nextTrack);
+  previousButton.addEventListener("click", previousTrack);
+
+  shuffleButton.addEventListener("click", () => {
+    isShuffle = !isShuffle;
+    shuffleButton.classList.toggle("active", isShuffle);
+    shuffleButton.style.color = isShuffle ? "#4da5ff" : "";
+  });
+
+  repeatButton.addEventListener("click", () => {
+    isRepeat = !isRepeat;
+    musicAudio.loop = isRepeat;
+
+    repeatButton.style.color = isRepeat ? "#4da5ff" : "";
+  });
+
+  musicAudio.addEventListener("timeupdate", () => {
+    if (!musicAudio.duration) return;
+
+    progressBar.value =
+      (musicAudio.currentTime / musicAudio.duration) * 100;
+
+    currentTimeDisplay.textContent =
+      formatTime(musicAudio.currentTime);
+  });
+
+  musicAudio.addEventListener("loadedmetadata", () => {
+    durationDisplay.textContent =
+      formatTime(musicAudio.duration);
+  });
+
+  progressBar.addEventListener("input", () => {
+    if (!musicAudio.duration) return;
+
+    musicAudio.currentTime =
+      (progressBar.value / 100) * musicAudio.duration;
+  });
+
+  volumeBar.addEventListener("input", () => {
+    musicAudio.volume = volumeBar.value / 100;
+  });
+
+  musicAudio.volume = volumeBar.value / 100;
+
+  musicAudio.addEventListener("ended", () => {
+    if (!isRepeat) {
+      nextTrack();
+    }
+  });
+
+  musicAudio.addEventListener("play", () => {
+    musicPlayer.classList.add("is-playing");
+    playButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    updatePlaylist();
+  });
+
+  musicAudio.addEventListener("pause", () => {
+    musicPlayer.classList.remove("is-playing");
+    playButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+    updatePlaylist();
+  });
+
+  playlistToggle.addEventListener("click", () => {
+    const isOpen = playlistPanel.classList.toggle("open");
+
+    playlistToggle.setAttribute("aria-expanded", String(isOpen));
+    playlistToggle.innerHTML = isOpen
+      ? '<i class="fa-solid fa-xmark"></i>'
+      : '<i class="fa-solid fa-bars"></i>';
+  });
+
+  renderPlaylist();
+  loadTrack(0);
 }
