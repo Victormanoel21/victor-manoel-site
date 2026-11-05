@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080808">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Site oficial de Victor Manuel — artista independente. Ouça Illusion Night e conheça seus lançamentos.">
   <title>Victor Manoel | Artista independente</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,6 +23,8 @@
       <a class="nav-link active" href="#inicio">Início</a>
       <a class="nav-link" href="#sobre">Sobre mim</a>
       <a class="nav-link" href="#musicas">Músicas</a>
+     <a class="nav-link" href="#videoclipes">Videoclipes</a>
+     <a class="nav-link" href="#player">Reprodutor</a>
       <a class="nav-link" href="#contato">Contato</a>
     </nav>
     <a class="header-cta" href="#musicas">Ouvir agora <span>↗</span></a>
@@ -108,6 +112,174 @@
         <!-- Os cards são montados pelo JavaScript. Edite a lista TRACKS em script.js. -->
       </div>
     </section>
+     
+       <!-- SEÇÃO DE VIDEOCLIPES -->
+<section class="videos section" id="videoclipes">
+
+  <div class="section-kicker">
+    <span>03</span> / YOUTUBE
+  </div>
+
+  <div class="section-heading">
+    <div>
+      <h2 class="section-title reveal">
+        Meus <span>videoclipes.</span>
+      </h2>
+
+      <p class="muted">
+        Assista aos meus vídeos diretamente por aqui.
+      </p>
+    </div>
+  </div>
+
+  <div class="video-card reveal">
+
+    <!-- PLAYER CONTROLADO PELO JAVASCRIPT -->
+    <div class="video-frame">
+      <div id="youtubePlayer"></div>
+    </div>
+
+    <!-- CONTROLES DO VIDEOCLIPE -->
+    <div class="video-controls">
+
+      <div class="video-control-buttons">
+
+        <button type="button" id="backButton" title="Voltar 10 segundos">⏪</button>
+
+        <button type="button" id="playPauseButton" title="Reproduzir ou pausar">▶</button>
+
+        <button type="button" id="stopButton" title="Parar vídeo">■</button>
+
+        <button type="button" id="forwardButton" title="Avançar 10 segundos">⏩</button>
+
+        <button type="button" id="muteButton" title="Ativar ou desativar áudio">🔊</button>
+
+      </div>
+
+      <div class="volume-control">
+        <label for="volumeSlider">VOLUME</label>
+
+        <input
+          type="range"
+          id="volumeSlider"
+          min="0"
+          max="100"
+          value="100">
+
+        <span id="volumeValue">100%</span>
+      </div>
+
+      <p id="videoStatus">Preparando videoclipe...</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MUSIC PLAYER -->
+<section class="music-player-section section" id="player">
+
+  <div class="section-heading reveal">
+    <p class="eyebrow">EXPERIÊNCIA SONORA</p>
+    <h2>Music <span>Player</span></h2>
+    <p>Entre no universo musical de Victor Manoel.</p>
+  </div>
+
+  <div class="music-player reveal">
+
+    <div class="player-top">
+      <span class="player-status">
+        <span class="player-status-dot"></span>
+        MUSIC PLAYER
+      </span>
+      <button class="playlist-toggle" id="playlistToggle"
+        aria-label="Abrir playlist" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="player-main">
+
+      <div class="player-cover-area">
+        <div class="player-cover-glow"></div>
+        <img src="images/illusion-night.jpg"
+          alt="Capa da música"
+          class="player-cover" id="playerCover">
+        <div class="cover-equalizer" id="coverEqualizer">
+          <span></span><span></span><span></span>
+          <span></span><span></span>
+        </div>
+      </div>
+
+      <div class="player-info">
+        <p class="player-label">TOCANDO AGORA</p>
+        <h3 id="playerTitle">Illusion Night</h3>
+        <p id="playerArtist">Victor Manoel</p>
+      </div>
+
+      <div class="player-progress">
+        <input type="range" id="progressBar"
+          min="0" max="100" value="0"
+          aria-label="Progresso da música">
+        <div class="player-time">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <button id="shuffleButton" aria-label="Reprodução aleatória">
+          <i class="fa-solid fa-shuffle"></i>
+        </button>
+        <button id="previousButton" aria-label="Música anterior">
+          <i class="fa-solid fa-backward-step"></i>
+        </button>
+        <button id="playButton" class="play-main"
+          aria-label="Reproduzir">
+          <i class="fa-solid fa-play"></i>
+        </button>
+        <button id="nextButton" aria-label="Próxima música">
+          <i class="fa-solid fa-forward-step"></i>
+        </button>
+        <button id="repeatButton" aria-label="Repetir música">
+          <i class="fa-solid fa-repeat"></i>
+        </button>
+      </div>
+
+      <div class="player-volume">
+        <i class="fa-solid fa-volume-low"></i>
+        <input type="range" id="volumeBar"
+          min="0" max="100" value="75"
+          aria-label="Volume">
+        <i class="fa-solid fa-volume-high"></i>
+      </div>
+
+    </div>
+
+    <div class="playlist-panel" id="playlistPanel">
+      <div class="playlist-heading">
+        <div>
+          <span>YOUR COLLECTION</span>
+          <h3>Lista de reprodução</h3>
+        </div>
+        <span id="playlistCount">01 FAIXA</span>
+      </div>
+
+      <div class="playlist-items" id="playlistItems"></div>
+    </div>
+
+    <audio id="musicAudio" preload="metadata"></audio>
+
+    <div class="player-footer">
+      <span>VICTOR MANOEL</span>
+      <span>FEEL THE MUSIC <i class="fa-solid fa-heart"></i></span>
+    </div>
+
+  </div>
+</section>
+
 
     <section class="contact section" id="contato">
       <div class="section-kicker"><span>03</span> / CONTATO</div>
