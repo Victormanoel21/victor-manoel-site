@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "victor-manoel-v1";
+const CACHE_NAME = "victor-manoel-v2";
 
 const FILES_TO_CACHE = [
   "./",
@@ -9,6 +9,7 @@ const FILES_TO_CACHE = [
   "./manifest.json"
 ];
 
+// Instalação
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -19,6 +20,7 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
+// Ativação e limpeza dos caches antigos
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -27,12 +29,11 @@ self.addEventListener("activate", event => {
           .filter(key => key !== CACHE_NAME)
           .map(key => caches.delete(key))
       )
-    )
+    ).then(() => self.clients.claim())
   );
-
-  self.clients.claim();
 });
 
+// Busca arquivos atualizados primeiro
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
@@ -41,10 +42,8 @@ self.addEventListener("fetch", event => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-
-      return fetch(event.request).then(response => {
+    fetch(event.request)
+      .then(response => {
         if (response.ok) {
           const copy = response.clone();
 
@@ -54,7 +53,11 @@ self.addEventListener("fetch", event => {
         }
 
         return response;
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request).then(cached => {
+          return cached || caches.match("./index.html");
+        });
+      })
   );
 });
