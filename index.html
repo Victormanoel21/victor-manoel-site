@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Site oficial de Victor Manuel — artista independente. Ouça Illusion Night e conheça seus lançamentos.">
+  <title>Victor Manoel | Artista independente</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Victor Manuel, início">VM<span>.</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <nav class="main-nav" id="mainNav">
+      <a class="nav-link active" href="#inicio">Início</a>
+      <a class="nav-link" href="#sobre">Sobre mim</a>
+      <a class="nav-link" href="#musicas">Músicas</a>
+      <a class="nav-link" href="#contato">Contato</a>
+    </nav>
+    <a class="header-cta" href="#musicas">Ouvir agora <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero section" id="inicio">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="live-dot"></span> ARTISTA INDEPENDENTE</p>
+        <h1 class="hero-name">Victor<br><span>Manoel</span></h1>
+        <p class="hero-description">Música, sentimento e histórias que merecem ser ouvidas.</p>
+        <div class="hero-actions">
+          <a class="button button-light" href="#musicas">Explorar músicas <span>↗</span></a>
+          <a class="button button-outline" href="#sobre">Conheça minha história</a>
+        </div>
+        <div class="social-links">
+          <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">SPOTIFY <span>↗</span></a>
+          <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YOUTUBE <span>↗</span></a>
+        </div>
+      </div>
+
+      <div class="featured-wrap reveal">
+        <div class="featured-label"><span>DESTAQUE</span><span>01 / 01</span></div>
+        <article class="featured-card">
+          <div class="featured-cover">
+            <!-- Troque cover-illusion-night.jpg pela imagem real da capa -->
+            <img src="Illusion-night.png" alt="Capa da música Illusion Night" onerror="this.style.display='none'; this.parentElement.classList.add('cover-fallback')">
+            <div class="cover-fallback-text">ILLUSION<br><span>NIGHT</span></div>
+            <span class="cover-sticker">NEW<br> SOUND</span>
+          </div>
+          <div class="featured-info">
+            <div><p class="eyebrow">FAIXA EM DESTAQUE</p><h2>Illusion Night</h2><p>Victor Manuel</p></div>
+            <a class="round-arrow" href="#musicas" aria-label="Ver plataformas">↗</a>
+          </div>
+          <div class="featured-platforms">
+            <a href="https://open.spotify.com/track/7tOMT5ILp9bTSTAocKAeuq?si=UAGIoZwLQuW4EJ9t8Rz7RA&utm_source=copy-link" target="_blank" rel="noopener noreferrer">Ouvir no Spotify <span>↗</span></a>
+            <a href="https://youtu.be/qa1r3WlA-FM?is=PTj3X9MfieUGmblg" target="_blank" rel="noopener noreferrer">Assistir no YouTube <span>↗</span></a>
+          </div>
+        </article>
+      </div>
+      <div class="hero-bottom"><span>INDEPENDENTE POR ESSÊNCIA.</span><span>© VICTOR MANUEL</span></div>
+    </section>
+
+    <section class="about section" id="sobre">
+      <div class="section-kicker"><span>01</span> / SOBRE MIM</div>
+      <div class="about-grid">
+        <h2 class="section-title reveal">
+    Além da música,<br>uma <span>identidade.</span>
+</h2>
+        <div class="about-text reveal">
+    <p>
+        Victor Manoel é um artista independente que transforma
+        sentimentos, ideias e experiências em música. Com uma
+        identidade artística própria, desenvolve composições
+        que exploram diferentes sonoridades, transitando entre
+        o rap, o hip-hop e o trap romântico.
+    </p>
+
+    <p>
+        Sua trajetória reúne lançamentos como
+        <strong>Illusion Night</strong>, <strong>Outra Vez</strong>,
+        <strong>Meu Porto</strong> e <strong>Stay With Me Tonight</strong>,
+        entre outros trabalhos que representam diferentes fases
+        de sua evolução musical. Sempre em busca de novas
+        possibilidades, Victor segue construindo seu caminho
+        e fortalecendo sua presença no universo digital.
+    </p>
+
+    <a class="text-link" href="#musicas">
+        Conheça meus lançamentos ao longo da minha trajetória
+        <span>↗</span>
+    </a>
+</div>
+      </div>
+      <div class="about-line"><span>CRIATIVIDADE</span><span>IDENTIDADE</span><span>CONEXÃO</span></div>
+    </section>
+
+    <section class="music section" id="musicas">
+      <div class="section-kicker"><span>02</span> / DISCOGRAFIA</div>
+      <div class="section-heading">
+        <div><h2 class="section-title reveal">Minhas <span>músicas.</span></h2><p class="muted">Escolha uma faixa e ouça na sua plataforma favorita.</p></div>
+        <span class="track-count" id="trackCount">01 FAIXA</span>
+      </div>
+      <div class="music-grid" id="musicGrid">
+        <!-- Os cards são montados pelo JavaScript. Edite a lista TRACKS em script.js. -->
+      </div>
+    </section>
+
+    <section class="contact section" id="contato">
+      <div class="section-kicker"><span>03</span> / CONTATO</div>
+      <div class="contact-grid">
+        <div class="contact-intro reveal">
+          <h2 class="section-title">Vamos<br><span>conversar?</span></h2>
+          <p>Tem uma ideia, proposta, parceria ou só quer mandar uma mensagem? Vou gostar de receber seu contato.</p>
+          <a class="whatsapp-link" id="whatsappLink" href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">Conversar pelo WhatsApp <span>↗</span></a>
+        </div>
+        <form class="contact-form reveal" id="contactForm">
+          <div class="form-row">
+            <label>Nome<input name="nome" type="text" placeholder="Seu nome" required></label>
+            <label>Sobrenome<input name="sobrenome" type="text" placeholder="Seu sobrenome" required></label>
+          </div>
+          <label>E-mail<input name="email" type="email" placeholder="voce@email.com" required></label>
+          <label>Mensagem<textarea name="mensagem" rows="5" placeholder="Escreva sua mensagem..." required></textarea></label>
+          <label class="file-label">Anexar uma foto ou arquivo <input id="attachment" name="anexo" type="file" accept="image/*,.pdf,.doc,.docx"><span class="file-hint" id="fileHint">Selecionar arquivo (opcional)</span></label>
+          <button class="button button-light submit-button" type="submit">Enviar mensagem <span>↗</span></button>
+          <p class="form-note" id="formStatus" role="status">O formulário precisa ser conectado a um serviço de envio para receber mensagens e anexos.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="#inicio">VM<span>.</span></a>
+    <p>Feito com música. © <span id="year"></span> Victor Manuel.</p>
+    <a href="#inicio">Voltar ao topo ↑</a>
+  </footer>
+
+  <button class="chat-launcher" id="chatLauncher" aria-label="Abrir chat ao vivo"><span class="chat-icon">✳</span><span class="chat-label">Fale comigo</span></button>
+  <aside class="chat-panel" id="chatPanel" aria-label="Chat ao vivo" aria-hidden="true">
+    <div class="chat-head"><div><span class="live-dot"></span><strong>Conversa direta</strong><small>Chat do site</small></div><button id="chatClose" aria-label="Fechar chat">×</button></div>
+    <div class="chat-messages" id="chatMessages"><div class="chat-bubble bot">Olá! Que bom ter você por aqui. Deixe sua mensagem e, quando o chat estiver conectado, ela poderá chegar até mim. ✨</div></div>
+    <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Digite sua mensagem..." autocomplete="off" required><button aria-label="Enviar mensagem" type="submit">↑</button></form>
+    <p class="chat-footnote" id="chatStatus">Chat ainda não conectado ao atendimento.</p>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
