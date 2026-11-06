@@ -37,18 +37,16 @@ const profileEmail = document.getElementById("profileEmail");
 const logoutButton = document.getElementById("logoutButton");
 
 
+
 // ========================================
 // VERIFICAR AUTENTICAÇÃO
 // ========================================
 
 auth.onAuthStateChanged(async (user) => {
 
+    // Se não estiver autenticado, encaminhar para o login
     if (!user) {
-        profileMenu.hidden = true;
-        profileDropdown.hidden = true;
-
-        console.log("Nenhum usuário autenticado.");
-
+        window.location.replace("./login.html");
         return;
     }
 
@@ -63,15 +61,12 @@ auth.onAuthStateChanged(async (user) => {
     profileEmail.textContent = user.email || "";
 
     try {
-
-        // Buscar informações no Firestore
         const userDoc = await db
             .collection("usuarios")
             .doc(user.uid)
             .get();
 
         if (userDoc.exists) {
-
             const dados = userDoc.data();
 
             const nome = dados.nome || user.displayName || "Minha conta";
@@ -80,22 +75,14 @@ auth.onAuthStateChanged(async (user) => {
             profileName.textContent = nome;
             dropdownName.textContent = nome;
             profileEmail.textContent = email;
-
-            console.log("Perfil carregado:", dados);
-
-        } else {
-
-            console.warn("Documento do usuário não encontrado.");
-
         }
 
     } catch (error) {
-
         console.error("Erro ao carregar perfil:", error);
-
     }
 
 });
+
 
 
 // ========================================
