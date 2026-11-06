@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080612">
+    <title>Criar conta | Victor Manoel</title>
+    <link rel="stylesheet" href="cadastro.css">
+</head>
+<body>
+
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <main class="register-page">
+
+        <section class="register-intro">
+            <span class="intro-tag">VICTOR MANOEL • MEMBER AREA</span>
+
+            <h1>
+                Sua jornada
+                <span>começa aqui.</span>
+            </h1>
+
+            <p>
+                Crie sua conta e tenha acesso ao universo musical
+                de Victor Manoel.
+            </p>
+
+            <div class="intro-decoration">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="orbit-center">VM</div>
+            </div>
+
+            <div class="intro-footer">
+                <span>01 / 03</span>
+                <span>CREATE YOUR ACCOUNT</span>
+            </div>
+        </section>
+
+        <section class="register-form-area">
+
+            <div class="register-header">
+                <span class="status-indicator"></span>
+                <span>PORTAL DE CADASTRO</span>
+            </div>
+
+            <div class="form-heading">
+                <h2>Criar conta</h2>
+                <p>Preencha os dados abaixo para começar.</p>
+            </div>
+
+            <form id="registerForm">
+
+                <div class="field">
+                    <label for="name">Nome completo</label>
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Como podemos chamar você?"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="email">Endereço de e-mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="voce@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="password">Criar senha</label>
+                    <div class="password-field">
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Mínimo de 6 caracteres"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+                        <button type="button" class="toggle-password" data-target="password">
+                            Mostrar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="confirmPassword">Confirmar senha</label>
+                    <div class="password-field">
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Digite sua senha novamente"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button type="button" class="toggle-password" data-target="confirmPassword">
+                            Mostrar
+                        </button>
+                    </div>
+                </div>
+
+                <label class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <span>Confirmo que os dados informados estão corretos.</span>
+                </label>
+
+                <p id="message" class="message"></p>
+
+                <button type="submit" class="create-button">
+                    <span>Criar minha conta</span>
+                    <span class="button-arrow">→</span>
+                </button>
+
+            </form>
+
+            <div class="login-return">
+                Já possui uma conta?
+                <a href="login.html">Fazer login</a>
+            </div>
+
+            <div class="security-note">
+                <span>◆</span>
+                Seus dados de autenticação são processados pelo Firebase.
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="cadastro.js"></script>
+
+</body>
+</html>
