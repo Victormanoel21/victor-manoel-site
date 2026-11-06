@@ -1,15 +1,17 @@
 
-const CACHE_NAME = "victor-manoel-v2";
+const CACHE_NAME = "victor-manoel-v3";
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./style.css",
   "./script.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./logo.png",
+  "./Illusion-night.png"
 ];
 
-// Instalação
+// INSTALAÇÃO
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -20,7 +22,7 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// Ativação e limpeza dos caches antigos
+// ATIVAÇÃO E LIMPEZA DOS CACHES ANTIGOS
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -33,7 +35,7 @@ self.addEventListener("activate", event => {
   );
 });
 
-// Busca arquivos atualizados primeiro
+// ATUALIZAÇÃO DOS ARQUIVOS: NETWORK FIRST
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
