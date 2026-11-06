@@ -12,16 +12,22 @@ const TRACKS = [
     youtube: "https://youtu.be/qa1r3WlA-FM?is=PTj3X9MfieUGmblg"
   },
   {
-    title: "Illusion Night",
-    cover: "cover-illusion-night.png",
+    title: "Outra vez",
+    cover: "outra-vez.png",
+    spotify: "https://open.spotify.com/track/4g1iCX2CfoFGtYMHF86ImB?si=kL_rW0rSQwaAlpIrx2PdcQ&utm_source=copy-link",
+    youtube: "https://youtu.be/5ODaP4HQ1DE?is=AHqh8y1lWu06Ii-A"
+  },
+  {
+    title: "Clareza",
+    cover: "clareza.png",
     spotify: "https://open.spotify.com/",
-    youtube: "https://www.youtube.com/"
-  }
+    youtube: "https://youtu.be/4IWZqd3GLEw?is=yi41yPyaUNoA6jjS"
+  },
 ];
 
 // Coloque seu número com código do país e DDD, somente números.
 // Exemplo: 5511999999999
-const WHATSAPP_NUMBER = "5500000000000";
+const WHATSAPP_NUMBER = "5585999789037";
 
 // Integrações opcionais: informe URLs de um backend/serviço que receba os dados.
 // Sem esses endereços, o formulário e o chat ficam em modo de demonstração.
@@ -40,7 +46,7 @@ function renderTracks() {
         <img
           src="${escapeHTML(track.cover)}"
           alt="Capa de ${escapeHTML(track.title)}"
-          loading="lazy"
+          loading="eager"
           onerror="this.style.display='none'; this.nextElementSibling.hidden=false"
         >
         <div class="track-cover-fallback" hidden>
@@ -174,59 +180,290 @@ contactForm.addEventListener("submit", async event => {
   }
 });
 
-// Janela de chat. Para atendimento real, conecte CHAT_ENDPOINT a um backend
-// com autenticação, armazenamento e entrega das mensagens em tempo real.
+
+/* =====================================
+   ASSISTENTE VIRTUAL - VICTOR MANOEL
+   Sistema de conversação local
+===================================== */
+
 const chatLauncher = document.getElementById("chatLauncher");
 const chatPanel = document.getElementById("chatPanel");
 const chatClose = document.getElementById("chatClose");
 const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const chatMessages = document.getElementById("chatMessages");
-const chatStatus = document.getElementById("chatStatus");
+const chatTyping = document.getElementById("chatTyping");
+
+/* ABRIR E FECHAR O ASSISTENTE */
 
 function setChatOpen(open) {
   chatPanel.classList.toggle("open", open);
   chatPanel.setAttribute("aria-hidden", String(!open));
-  if (open) chatInput.focus();
-}
-chatLauncher.addEventListener("click", () => setChatOpen(!chatPanel.classList.contains("open")));
-chatClose.addEventListener("click", () => setChatOpen(false));
+  chatLauncher.setAttribute("aria-expanded", String(open));
 
-function addChatMessage(message, type) {
+  if (open) {
+    chatInput.focus();
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+}
+
+chatLauncher.addEventListener("click", () => {
+  setChatOpen(!chatPanel.classList.contains("open"));
+});
+
+chatClose.addEventListener("click", () => {
+  setChatOpen(false);
+});
+
+/* FECHAR COM A TECLA ESC */
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && chatPanel.classList.contains("open")) {
+    setChatOpen(false);
+  }
+});
+
+/* ADICIONAR MENSAGENS */
+
+function addChatMessage(message, type, links = []) {
   const bubble = document.createElement("div");
   bubble.className = `chat-bubble ${type}`;
-  bubble.textContent = message;
+
+  bubble.appendChild(document.createTextNode(message));
+
+  links.forEach(link => {
+    const anchor = document.createElement("a");
+
+    anchor.href = link.url;
+    anchor.textContent = link.label;
+    anchor.className = "chat-inline-link";
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+
+    bubble.appendChild(document.createElement("br"));
+    bubble.appendChild(anchor);
+  });
+
+  const time = document.createElement("small");
+  time.className = "chat-time";
+  time.textContent = new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  bubble.appendChild(time);
+
   chatMessages.appendChild(bubble);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-chatForm.addEventListener("submit", async event => {
+/* NORMALIZAR TEXTO */
+
+function normalizeChatText(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/* ESCOLHER UMA RESPOSTA */
+
+function randomChatResponse(responses) {
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+/* CÉREBRO DO ASSISTENTE */
+
+function getAssistantResponse(message) {
+  const text = normalizeChatText(message);
+
+  /* CUMPRIMENTOS */
+
+  if (/^(oi|ola|opa|eai|e ae|bom dia|boa tarde|boa noite|tudo bem)(\s|$)/.test(text)) {
+    return {
+      text: randomChatResponse([
+        "Olá! 👋 Que bom ter você por aqui! Como posso ajudar?",
+        "Oi! Seja muito bem-vindo! 💙 O que gostaria de saber sobre Victor Manoel?",
+        "Olá! Tudo bem por aí? Estou aqui para apresentar o universo musical de Victor Manoel. 🎵",
+        "Opa! Seja bem-vindo! É um prazer receber sua visita. Como posso ajudar?"
+      ])
+    };
+  }
+
+  /* AGRADECIMENTOS */
+
+  if (/obrigad|valeu|agradeco|muito bom/.test(text)) {
+    return {
+      text: randomChatResponse([
+        "Por nada! 💙 Sempre que precisar, estarei por aqui.",
+        "Eu que agradeço pela visita! Continue acompanhando Victor Manoel. 🎵",
+        "Disponha! Foi um prazer conversar com você. 😊"
+      ])
+    };
+  }
+
+  /* DESPEDIDAS */
+
+  if (/^(tchau|ate mais|ate logo|falou|fui|adeus)/.test(text)) {
+    return {
+      text: randomChatResponse([
+        "Até mais! Obrigado pela visita e volte sempre! 💙",
+        "Foi um prazer conversar com você. Até a próxima! 👋",
+        "Até logo! Continue acompanhando as novidades de Victor Manoel! 🎵"
+      ])
+    };
+  }
+
+  /* ILLUSION NIGHT */
+
+  if (/illusion night|illusion/.test(text)) {
+    return {
+      text: "Illusion Night é uma das faixas de Victor Manoel, com uma proposta de trap romântico. 🌙🎵 Você pode ouvir e conhecer a música nas plataformas:",
+      links: [
+        {
+          label: "♫ Ouvir no Spotify",
+          url: "https://open.spotify.com/track/7tOMT5ILp9bTSTAocKAeuq?si=UAGIoZwLQuW4EJ9t8Rz7RA&utm_source=copy-link"
+        },
+        {
+          label: "▶ Assistir no YouTube",
+          url: "https://youtu.be/qa1r3WlA-FM?is=PTj3X9MfieUGmblg"
+        }
+      ]
+    };
+  }
+
+  /* HISTÓRIA E IDENTIDADE DO ARTISTA */
+
+  if (
+    /quem e|historia|trajetoria|sobre o artista|sobre victor|biografia|me conta sobre|fale sobre/.test(text)
+  ) {
+    return {
+      text: "Victor Manoel é um artista independente e compositor que transforma sentimentos, ideias e experiências em música. 💙\n\nSua identidade musical explora diferentes sonoridades, passando pelo rap, hip-hop e trap romântico.\n\nSua trajetória reúne trabalhos como Illusion Night, Outra Vez, Meu Porto e Stay With Me Tonight. Cada composição representa uma parte de sua evolução artística.\n\nA proposta é continuar criando, experimentando e compartilhando histórias por meio da música. 🎶"
+    };
+  }
+
+  /* ÚLTIMOS LANÇAMENTOS */
+
+  if (/ultim|lancamento|novidade|novidades|musica nova|proximo lancamento|novas musicas/.test(text)) {
+    return {
+      text: "Para acompanhar os lançamentos e novidades de Victor Manoel, fique de olho em seus canais e plataformas digitais! 💙\n\nAssim você poderá conhecer os próximos trabalhos, novidades musicais e futuras estreias.\n\nConfira também Illusion Night:",
+      links: [
+        {
+          label: "♫ Spotify",
+          url: "https://open.spotify.com/track/7tOMT5ILp9bTSTAocKAeuq?si=UAGIoZwLQuW4EJ9t8Rz7RA&utm_source=copy-link"
+        },
+        {
+          label: "▶ YouTube",
+          url: "https://youtu.be/qa1r3WlA-FM?is=PTj3X9MfieUGmblg"
+        }
+      ]
+    };
+  }
+
+  /* DISCOGRAFIA E MÚSICAS */
+
+  if (/discografia|musicas|cancoes|faixas|repertorio|quais musicas|nome das musicas/.test(text)) {
+    return {
+      text: "Victor Manoel possui trabalhos que representam diferentes fases de sua trajetória musical. 🎵\n\nEntre os títulos apresentados no site estão:\n\n• Illusion Night\n• Outra Vez\n• Meu Porto\n• Stay With Me Tonight\n\nVocê pode explorar a seção de músicas para conhecer os trabalhos disponíveis."
+    };
+  }
+
+  /* GÊNEROS MUSICAIS */
+
+  if (/genero|estilo musical|tipo de musica|rap|hip hop|trap/.test(text)) {
+    return {
+      text: "A identidade musical de Victor Manoel transita entre o rap, o hip-hop e o trap romântico. 🎧\n\nSuas composições exploram sentimentos, ideias e diferentes atmosferas musicais."
+    };
+  }
+
+  /* SPOTIFY */
+
+  if (/spotify/.test(text)) {
+    return {
+      text: "Você pode ouvir Illusion Night diretamente no Spotify! 💙",
+      links: [
+        {
+          label: "♫ Ouvir Illusion Night no Spotify",
+          url: "https://open.spotify.com/track/7tOMT5ILp9bTSTAocKAeuq?si=UAGIoZwLQuW4EJ9t8Rz7RA&utm_source=copy-link"
+        }
+      ]
+    };
+  }
+
+  /* YOUTUBE */
+
+  if (/youtube|video|videoclipe|assistir/.test(text)) {
+    return {
+      text: "Você pode acompanhar Illusion Night pelo YouTube! ▶🎵",
+      links: [
+        {
+          label: "Assistir no YouTube",
+          url: "https://youtu.be/qa1r3WlA-FM?is=PTj3X9MfieUGmblg"
+        }
+      ]
+    };
+  }
+
+  /* CONTATO */
+
+  if (/contato|conversar com|falar com|proposta|parceria/.test(text)) {
+    return {
+      text: "Que bom saber do seu interesse! 💙\n\nPara assuntos profissionais, propostas ou parcerias, visite a seção Contato do site de Victor Manoel. Lá você encontra as informações disponíveis para entrar em contato."
+    };
+  }
+
+  /* RESPOSTA PADRÃO */
+
+  return {
+    text: randomChatResponse([
+      "Interessante! 😊 Ainda não tenho uma resposta específica para essa pergunta, mas posso ajudar com informações sobre a história, as músicas e os lançamentos de Victor Manoel.",
+      "Hmm, quero te ajudar com isso! 💙 Você pode me perguntar sobre Victor Manoel, sua trajetória musical, Illusion Night ou suas plataformas digitais.",
+      "Obrigado pela pergunta! Ainda estou aprendendo a responder sobre esse assunto. Que tal conversarmos sobre as músicas e a história de Victor Manoel? 🎵",
+      "Não encontrei essa informação no meu conhecimento atual. Mas posso contar sobre o artista, sua identidade musical e seus trabalhos!"
+    ])
+  };
+}
+
+/* RECEBER E RESPONDER ÀS MENSAGENS */
+
+chatForm.addEventListener("submit", event => {
   event.preventDefault();
+
   const message = chatInput.value.trim();
+
   if (!message) return;
+
   addChatMessage(message, "user");
   chatInput.value = "";
 
-  if (!CHAT_ENDPOINT) {
-    chatStatus.textContent = "Mensagem exibida apenas nesta demonstração. Configure CHAT_ENDPOINT para receber mensagens de verdade.";
-    addChatMessage("Sua mensagem apareceu aqui, mas o atendimento ainda não está conectado. Você também pode me chamar pelo WhatsApp. 💬", "bot");
-    return;
+  chatInput.disabled = true;
+  chatForm.querySelector("button").disabled = true;
+
+  if (chatTyping) {
+    chatTyping.hidden = false;
   }
 
-  try {
-    const response = await fetch(CHAT_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, sentAt: new Date().toISOString() })
-    });
-    if (!response.ok) throw new Error("Falha no chat");
-    chatStatus.textContent = "Mensagem enviada ao serviço de atendimento.";
-    addChatMessage("Mensagem enviada! Obrigado por falar comigo. ✨", "bot");
-  } catch {
-    chatStatus.textContent = "Não foi possível enviar. Tente novamente mais tarde.";
-    addChatMessage("Ops! Não consegui enviar sua mensagem agora. Tente pelo WhatsApp.", "bot");
-  }
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  const response = getAssistantResponse(message);
+
+  setTimeout(() => {
+    if (chatTyping) {
+      chatTyping.hidden = true;
+    }
+
+    addChatMessage(response.text, "bot", response.links || []);
+
+    chatInput.disabled = false;
+    chatForm.querySelector("button").disabled = false;
+    chatInput.focus();
+
+  }, 750 + Math.random() * 650);
 });
+
 
 
 // Registro do Service Worker (PWA)
@@ -243,144 +480,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-// CONTROLES DO VIDEOCLIP - VICTOR MANOEL
 
-let youtubePlayer;
-
-const videoStatus = document.getElementById("videoStatus");
-const playPauseButton = document.getElementById("playPauseButton");
-const stopButton = document.getElementById("stopButton");
-const backButton = document.getElementById("backButton");
-const forwardButton = document.getElementById("forwardButton");
-const muteButton = document.getElementById("muteButton");
-const volumeSlider = document.getElementById("volumeSlider");
-const volumeValue = document.getElementById("volumeValue");
-
-// Carrega a API oficial do YouTube
-const youtubeScript = document.createElement("script");
-youtubeScript.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(youtubeScript);
-
-// O YouTube chama esta função quando a API estiver pronta
-window.onYouTubeIframeAPIReady = function () {
-
-  youtubePlayer = new YT.Player("youtubePlayer", {
-    width: "100%",
-    height: "100%",
-    videoId: "qa1r3WlA-FM",
-
-    playerVars: {
-      playsinline: 1,
-      rel: 0
-    },
-
-    events: {
-      onReady: function () {
-        videoStatus.textContent = "Illusion Night está pronto para reprodução.";
-        youtubePlayer.setVolume(100);
-      },
-
-      onStateChange: function (event) {
-
-        if (event.data === YT.PlayerState.PLAYING) {
-          playPauseButton.textContent = "⏸";
-          videoStatus.textContent = "Reproduzindo Illusion Night";
-        }
-
-        else if (event.data === YT.PlayerState.PAUSED) {
-          playPauseButton.textContent = "▶";
-          videoStatus.textContent = "Vídeo pausado";
-        }
-
-        else if (event.data === YT.PlayerState.ENDED) {
-          playPauseButton.textContent = "▶";
-          videoStatus.textContent = "Videoclipe finalizado";
-        }
-
-        else if (event.data === YT.PlayerState.BUFFERING) {
-          videoStatus.textContent = "Carregando vídeo...";
-        }
-      },
-
-      onError: function () {
-        videoStatus.textContent = "Não foi possível carregar o vídeo.";
-      }
-    }
-  });
-};
-
-// Reproduzir e pausar
-playPauseButton.addEventListener("click", function () {
-
-  if (!youtubePlayer || !youtubePlayer.getPlayerState) return;
-
-  const state = youtubePlayer.getPlayerState();
-
-  if (state === YT.PlayerState.PLAYING) {
-    youtubePlayer.pauseVideo();
-  } else {
-    youtubePlayer.playVideo();
-  }
-});
-
-// Parar vídeo
-stopButton.addEventListener("click", function () {
-  if (youtubePlayer) {
-    youtubePlayer.stopVideo();
-    playPauseButton.textContent = "▶";
-    videoStatus.textContent = "Vídeo parado";
-  }
-});
-
-// Voltar 10 segundos
-backButton.addEventListener("click", function () {
-  if (youtubePlayer && youtubePlayer.getCurrentTime) {
-    const time = Math.max(0, youtubePlayer.getCurrentTime() - 10);
-    youtubePlayer.seekTo(time, true);
-  }
-});
-
-// Avançar 10 segundos
-forwardButton.addEventListener("click", function () {
-  if (youtubePlayer && youtubePlayer.getCurrentTime) {
-    const time = youtubePlayer.getCurrentTime() + 10;
-    youtubePlayer.seekTo(time, true);
-  }
-});
-
-// Ativar ou desativar áudio
-muteButton.addEventListener("click", function () {
-
-  if (!youtubePlayer) return;
-
-  if (youtubePlayer.isMuted()) {
-    youtubePlayer.unMute();
-    muteButton.textContent = "🔊";
-  } else {
-    youtubePlayer.mute();
-    muteButton.textContent = "🔇";
-  }
-});
-
-// Controle de volume
-volumeSlider.addEventListener("input", function () {
-
-  const volume = Number(volumeSlider.value);
-
-  if (youtubePlayer) {
-    youtubePlayer.setVolume(volume);
-
-    if (volume === 0) {
-      youtubePlayer.mute();
-      muteButton.textContent = "🔇";
-    } else {
-      youtubePlayer.unMute();
-      muteButton.textContent = "🔊";
-    }
-  }
-
-  volumeValue.textContent = volume + "%";
-});
 
 
 /* ==================================
@@ -422,6 +522,18 @@ if (musicAudio && musicPlayer) {
       artist: "Victor Manoel",
       cover: "imagesillusion-night.png",
       audio: "audioillusion-night.mp3"
+    },
+    {
+      title: "Outra Vez",
+      artist: "Victor Manoel",
+      cover: "outravezplayer.png",
+      audio: "audiooutravez.mp3"
+    },
+    {
+      title: "Clareza",
+      artist: "Victor Manoel",
+      cover: "clarezaplayer.png",
+      audio: "audioclareza.mp3"
     }
   ];
 
